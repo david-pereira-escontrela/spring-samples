@@ -15,7 +15,7 @@ spring:
       routing-expression: "headers['type']=='cold' ? 'coldDrinkRouter' : 'hotDrinkRouter'"
     stream:
       poller.fixedDelay: 50000
-      function.definition: ordersSupplier;ordersSplitter;functionRouter;preparedDrinks;deliveryDrinks;waiterConsumer
+      function.definition: ordersSupplier;ordersSplitter;functionRouter;preparedDrinks;deliveryDrinks;waiterConsumer;deliveryDlqConsumer
       bindings:
         output:
           producer:
@@ -43,16 +43,23 @@ spring:
         waiterConsumer-in-0:
           destination: delivery
           group: orders-api
+        deliveryDlqConsumer-in-0:
+          destination: delivery-dlq
+          group: orders-api
         functionRouter-in-0:
           destination: drinks
           group: orders-api
 
-#      kafka:
-#        binder:
-#          configuration:
-#            batch.size: 16384
-#            linger.ms: 2000
-#        bindings:
+      kafka:
+        #        binder:
+        #          configuration:
+        #            batch.size: 16384
+        #            linger.ms: 2000
+        bindings:
+          waiterConsumer-in-0:
+            consumer:
+              enableDlq: true
+              dlqName: delivery-dlq
             #preparedDrinks-in-0:
             #consumer:
             #configuration:

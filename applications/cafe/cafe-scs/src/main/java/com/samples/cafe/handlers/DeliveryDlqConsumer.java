@@ -7,16 +7,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component("waiterConsumer")
+@Component("deliveryDlqConsumer")
 @AllArgsConstructor
-public class WaiterConsumer implements Consumer<Delivery> {
+public class DeliveryDlqConsumer implements Consumer<Delivery> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WaiterConsumer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DeliveryDlqConsumer.class);
 
   @Override
   public void accept(Delivery delivery) {
 
-    LOGGER.info("[WaiterConsumer] delivery received {}.", delivery);
-    throw new RuntimeException("Message WaiterConsumer failed!");
+    LOGGER.info("[DeliveryDlqConsumer] delivery received {}.", delivery);
   }
 }
