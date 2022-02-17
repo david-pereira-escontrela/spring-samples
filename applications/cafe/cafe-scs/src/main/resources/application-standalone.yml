@@ -1,0 +1,61 @@
+logging:
+  level:
+    root: INFO
+    org.springframework: ERROR
+    org.apache.kafka: ERROR
+
+management:
+  health:
+    binders:
+      enabled: true
+
+spring:
+  cloud:
+    function:
+      routing-expression: "headers['type']=='cold' ? 'coldDrinkRouter' : 'hotDrinkRouter'"
+    stream:
+      poller.fixedDelay: 50000
+      function.definition: ordersSupplier;ordersSplitter;functionRouter;preparedDrinks;deliveryDrinks;waiterConsumer
+      bindings:
+        output:
+          producer:
+            errorChannelEnabled: true
+        ordersSupplier-out-0:
+          destination: orders
+          group: orders-api
+        ordersSplitter-in-0:
+          destination: orders
+          group: orders-api
+        ordersSplitter-out-0:
+          destination: drinks
+          group: orders-api
+        preparedDrinks-out-0:
+          destination: preparedDrinks
+          group: orders-api
+        deliveryDrinks-in-0:
+          destination: preparedDrinks
+          group: orders-api
+          consumer:
+            batch-mode: true
+        deliveryDrinks-out-0:
+          destination: delivery
+          group: orders-api
+        waiterConsumer-in-0:
+          destination: delivery
+          group: orders-api
+        functionRouter-in-0:
+          destination: drinks
+          group: orders-api
+
+#      kafka:
+#        binder:
+#          configuration:
+#            batch.size: 16384
+#            linger.ms: 2000
+#        bindings:
+            #preparedDrinks-in-0:
+            #consumer:
+            #configuration:
+            #max.poll.records: 1000
+            #fetch.min.bytes: 10000
+            #fetch.max.wait.ms: 5000

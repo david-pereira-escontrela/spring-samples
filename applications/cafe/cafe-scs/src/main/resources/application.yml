@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: cafe-scs
+  profiles:
+    active: standalone
+
+app:
+  version: @project.version@
+
+logging:
+  level:
+    root: ERROR
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
