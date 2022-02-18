@@ -17,6 +17,6 @@ public class WaiterConsumer implements Consumer<Delivery> {
   public void accept(Delivery delivery) {
 
     LOGGER.info("[WaiterConsumer] delivery received {}.", delivery);
-    throw new RuntimeException("Message WaiterConsumer failed!");
+    //throw new RuntimeException("Message WaiterConsumer failed!");
   }
 }

@@ -1,0 +1,9 @@
+# Binding properties
+spring:
+  cloud:
+    stream:
+      bindings:
+        output.destination: delivery_out
+        input.destination: delivery
+        input.group: polledConsumerApplication
+        input.content-type: text/plain
